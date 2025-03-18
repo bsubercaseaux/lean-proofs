@@ -1,6 +1,7 @@
-import Mathlib
+import Mathlib.Analysis.Normed.Ring.Lemmas
+import Mathlib.Combinatorics.SimpleGraph.Diam
+import Mathlib.Order.CompletePartialOrder
 
-namespace DiamBasics
 variable {α : Type*}  (G : SimpleGraph α)
 
 lemma preconnected_of_ediam_ne_top (h_ne_top : G.ediam ≠ ⊤ ) : G.Preconnected := by
@@ -12,11 +13,8 @@ lemma preconnected_of_ediam_ne_top (h_ne_top : G.ediam ≠ ⊤ ) : G.Preconnecte
   calc G.edist u v ≤ G.ediam := by exact SimpleGraph.edist_le_ediam
                  _ < ⊤ := by exact h_ne_top
 
-
 lemma connected_of_ediam_ne_top_and_nonempty (h_ne_top : G.ediam ≠ ⊤) (h_nonempty : Nonempty α) : G.Connected := by
   rw [SimpleGraph.connected_iff]; exact ⟨preconnected_of_ediam_ne_top G h_ne_top, h_nonempty⟩
-
-notation "|" V "|" => Fintype.card V
 
 -- Converse of SimpleGraph.ediam_ne_top_of_diam_ne_zero
 lemma pos_diam_of_ne_top_and_nt (h_ne_top : G.ediam ≠ ⊤) (nt_α : Nontrivial α) : 0 < G.diam  := by
@@ -24,7 +22,6 @@ lemma pos_diam_of_ne_top_and_nt (h_ne_top : G.ediam ≠ ⊤) (nt_α : Nontrivial
   have h_conn : G.Connected := connected_of_ediam_ne_top_and_nonempty G h_ne_top nt_α.to_nonempty
   calc 0 < G.dist u v := by apply SimpleGraph.Connected.pos_dist_of_ne h_conn uv_neq
           _ ≤ G.diam := by apply SimpleGraph.dist_le_diam h_ne_top
-
 
 lemma pos_diam_iff_ne_top_and_nt : G.diam > 0 ↔ G.ediam ≠ ⊤ ∧ Nontrivial α := by
   constructor
@@ -36,8 +33,6 @@ lemma pos_diam_iff_ne_top_and_nt : G.diam > 0 ↔ G.ediam ≠ ⊤ ∧ Nontrivial
     exact ⟨hediam,  SimpleGraph.nontrivial_of_diam_ne_zero diam_ne_zero⟩
   . intro ⟨hediam, hcard⟩
     apply pos_diam_of_ne_top_and_nt G hediam hcard
-
-
 
 lemma diam_eq_zero_of_not_connected [Fintype α] (h : G.diam = 0) (nt_α: Nontrivial α)  : ¬ G.Connected := by
   rw [SimpleGraph.connected_iff];
@@ -58,13 +53,9 @@ lemma diam_eq_zero_of_not_connected [Fintype α] (h : G.diam = 0) (nt_α: Nontri
     . have := not_subsingleton α
       contradiction
 
-
-
-lemma pos_diam_of_connected_and_card [Fintype α] (hconn: G.Connected) (nt_α : Nontrivial α ) :
+lemma pos_diam_of_connected_and_nt [Fintype α] (hconn: G.Connected) (nt_α : Nontrivial α ) :
   0 < G.diam := by
   by_contra h
   have h_diam : G.diam = 0 := by linarith
   have h_not_conn : ¬ G.Connected := diam_eq_zero_of_not_connected G h_diam nt_α
   contradiction
-
-end DiamBasics
