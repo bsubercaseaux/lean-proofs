@@ -34,7 +34,7 @@ lemma pos_diam_iff_ne_top_and_nt : G.diam > 0 ↔ G.ediam ≠ ⊤ ∧ Nontrivial
   . intro ⟨hediam, hcard⟩
     apply pos_diam_of_ne_top_and_nt G hediam hcard
 
-lemma diam_eq_zero_of_not_connected [Fintype α] (h : G.diam = 0) (nt_α: Nontrivial α)  : ¬ G.Connected := by
+lemma not_connected_of_diam_zero [Fintype α] (h : G.diam = 0) (nt_α: Nontrivial α)  : ¬ G.Connected := by
   rw [SimpleGraph.connected_iff];
   cases isEmpty_or_nonempty α
   · intro h; aesop
@@ -57,5 +57,5 @@ lemma pos_diam_of_connected_and_nt [Fintype α] (hconn: G.Connected) (nt_α : No
   0 < G.diam := by
   by_contra h
   have h_diam : G.diam = 0 := by linarith
-  have h_not_conn : ¬ G.Connected := diam_eq_zero_of_not_connected G h_diam nt_α
+  have h_not_conn : ¬ G.Connected := not_connected_of_diam_zero G h_diam nt_α
   contradiction
